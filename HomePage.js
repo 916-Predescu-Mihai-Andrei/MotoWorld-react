@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
+//import vehiclesData from "../data/vehicles";
 import VehicleCard from "../components/VehicleCard";
 import SearchFilter from "../components/SearchFilter";
-//import initialVehiclesData from "../data/vehicles";
-import axios from "axios";
-
+import initialVehiclesData from "../data/vehicles";
 import BikeStatistics from "../components/BikeStatistics";
 
 
@@ -12,7 +11,7 @@ const ITEMS_PER_PAGE = 4;
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const [vehicles, setVehicles] = useState([]);
+  const [vehicles, setVehicles] = useState(initialVehiclesData);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState(""); 
   const [filterValue, setFilterValue] = useState(""); 
@@ -20,15 +19,10 @@ const HomePage = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    axios.get("http://localhost:9090/api/bikes") // Backend URL
-      .then((response) => {
-        setVehicles(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching bikes:", error);
-      });
+    const storedVehicles = JSON.parse(localStorage.getItem("vehicles")) || [];
+    const mergedVehicles = storedVehicles.length > 0 ? storedVehicles : initialVehiclesData; 
+    setVehicles(mergedVehicles);
   }, []);
-  
 
   // Delete a vehicle
   const handleDelete = (id) => {
